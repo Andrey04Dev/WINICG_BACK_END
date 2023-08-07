@@ -36,23 +36,23 @@ namespace webapi.Controllers
             return Ok(getRolesByIDd);
 
         }
-        [HttpPost]
-        public async Task<IActionResult> AddRoles([FromForm] AddRolesDTO roles)
+        [HttpPost("addRole")]
+        public async Task<IActionResult> AddRoles(AddRolesDTO roles)
         {
             var getRole = mapper.Map<ROLES>(roles);
             var addRole = await _role.AddRoles(getRole);
             return Ok(addRole);
 
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRole([FromForm] AddRolesDTO roles, string id)
+        [HttpPut("updateRole/{id}")]
+        public async Task<IActionResult> UpdateRole(AddRolesDTO roles, string id)
         {
             var getRole = mapper.Map<ROLES>(roles);
             var updateRole = await _role.UpdateRoles(getRole,id);
             return Ok(updateRole);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteRole/{id}")]
         public async Task<IActionResult> DeleteRole( string id)
         {
             var deleteRole = await _role.RemoveRoles(id);
