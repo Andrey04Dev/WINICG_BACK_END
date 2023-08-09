@@ -75,7 +75,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateCertification/{id}")]
         public async Task<IActionResult> UpdateCertification([FromForm] CERTIFICATION certificationDTO, string id)
         {
             try
@@ -96,7 +96,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteCertification/{id}")]
         public async Task<IActionResult> RemoveCertification(string id)
         {
             try

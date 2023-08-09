@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addRisk")]
         public async Task<IActionResult> AddRisks([FromForm] RISKS RISKSDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateRisk/{id}")]
         public async Task<IActionResult> UpdateRisk([FromForm] RISKS RISKSDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteRisk/{id}")]
         public async Task<IActionResult> RemoveRisks(string id)
         {
             try

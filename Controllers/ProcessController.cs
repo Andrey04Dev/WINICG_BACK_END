@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addProcess")]
         public async Task<IActionResult> AddProcess(PROCESS PROCESSDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateProcess/{id}")]
         public async Task<IActionResult> UpdateProcess([FromForm] PROCESS PROCESSDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteProcess/{id}")]
         public async Task<IActionResult> RemoveProcess(string id)
         {
             try

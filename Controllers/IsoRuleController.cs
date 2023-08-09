@@ -54,7 +54,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addIsoRule")]
         public async Task<IActionResult> AddIsoule([FromForm] ISORULE ISORULEDTO)
         {
             try
@@ -75,7 +75,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateIsoRule/{id}")]
         public async Task<IActionResult> UpdateIsorule([FromForm] ISORULE ISORULEDTO, string id)
         {
             try
@@ -96,7 +96,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteIsoRule/{id}")]
         public async Task<IActionResult> RemoveIsorule(string id)
         {
             try

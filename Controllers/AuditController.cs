@@ -31,7 +31,7 @@ namespace webapi.Controllers
             return Ok(getAuditById);
         }
 
-        [HttpPost]
+        [HttpPost("addAudit")]
         public async Task<IActionResult> AddAudit([FromForm] AUDITS addAuditsDTO)
         {
             if (addAuditsDTO == null)
@@ -42,7 +42,7 @@ namespace webapi.Controllers
             return Ok(addAudit);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateAudit/{id}")]
         public async Task<IActionResult> UpdateAudit([FromForm] AUDITS addAuditDTO, string id)
         {
             if ( addAuditDTO == null)
@@ -53,7 +53,7 @@ namespace webapi.Controllers
             return Ok(update);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteAudit/{id}")]
         public async Task<IActionResult> DeleteAudit(string id)
         {
             if (!string.IsNullOrEmpty(id)) return BadRequest("El id esta vacio");

@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addCompanyPosition")]
         public async Task<IActionResult> AddCompanyPosition([FromForm] COMPANY_POSITION position)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateCompanyPosition/{id}")]
         public async Task<IActionResult> UpdateCompanyPosition([FromForm] COMPANY_POSITION companyDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteCompanyPosition/{id}")]
         public async Task<IActionResult> RemoveCompanyPosition(string id)
         {
             try

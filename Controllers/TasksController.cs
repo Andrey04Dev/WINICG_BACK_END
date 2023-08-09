@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addTask")]
         public async Task<IActionResult> AddTask([FromForm] TASKS TASKSDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateTask/{id}")]
         public async Task<IActionResult> UpdateTask([FromForm] TASKS TASKSDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteTask/{id}")]
         public async Task<IActionResult> RemoveTask(string id)
         {
             try

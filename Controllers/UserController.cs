@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addUser")]
         public async Task<IActionResult> AddUsers([FromForm] USERS USERSDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateUser/{id}")]
         public async Task<IActionResult> UpdateUsers([FromForm] USERS USERSDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteUser/{id}")]
         public async Task<IActionResult> RemoveUser(string id)
         {
             try

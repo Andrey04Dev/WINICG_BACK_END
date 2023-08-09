@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addFlag")]
         public async Task<IActionResult> AddFlag([FromForm] FLAGS flagDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateFlag/{id}")]
         public async Task<IActionResult> UpdateFlag([FromForm] FLAGS flagDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteFlag/{id}")]
         public async Task<IActionResult> RemoveFlag(string id)
         {
             try

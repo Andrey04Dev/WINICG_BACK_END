@@ -53,7 +53,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("addNoAccordance")]
         public async Task<IActionResult> AddNoAccordance([FromForm] NO_ACCORDANCE NO_ACCORDANCEDTO)
         {
             try
@@ -74,7 +74,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateNoAccordance{id}")]
         public async Task<IActionResult> UpdateNoAccordance([FromForm] NO_ACCORDANCE NO_ACCORDANCEDTO, string id)
         {
             try
@@ -95,7 +95,7 @@ namespace webapi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteNoAccordance{id}")]
         public async Task<IActionResult> RemoveNoAccordance(string id)
         {
             try
