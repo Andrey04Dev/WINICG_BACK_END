@@ -54,7 +54,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addFlag")]
-        public async Task<IActionResult> AddFlag([FromForm] FLAGS flagDTO)
+        public async Task<IActionResult> AddFlag( FLAGS flagDTO)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateFlag/{id}")]
-        public async Task<IActionResult> UpdateFlag([FromForm] FLAGS flagDTO, string id)
+        public async Task<IActionResult> UpdateFlag( FLAGS flagDTO, string id)
         {
             try
             {

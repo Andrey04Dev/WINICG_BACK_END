@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using webapi.DTO.Users;
 using webapi.Interfaces.Users;
 using webapi.Models;
+using webapi.Services;
 
 namespace webapi.Controllers
 {
@@ -10,10 +14,14 @@ namespace webapi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository user;
+        //private readonly ITokenServices token;
+        private readonly IMapper mapper;
 
-        public UserController(IUserRepository user)
+        public UserController(IUserRepository user, IMapper mapper)
         {
             this.user = user;
+            //this.token = token;
+            this.mapper = mapper;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
@@ -32,7 +40,7 @@ namespace webapi.Controllers
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
-        {
+       {
             try
             {
                 if (id == null)
@@ -54,15 +62,18 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addUser")]
-        public async Task<IActionResult> AddUsers([FromForm] USERS USERSDTO)
+        public async Task<IActionResult> AddUsers(AddUserDTO USERSDTO)
         {
             try
             {
+                USERSDTO.EMAIL = USERSDTO.EMAIL.ToLower();
                 if (USERSDTO == null)
                 {
                     return BadRequest("THe data is empty");
                 }
-                var addUSERS = await user.AddUsers(USERSDTO);
+
+                var getUser = mapper.Map<USERS>(USERSDTO);
+                var addUSERS = await user.AddUsers(getUser, USERSDTO.PASSWORD);
 
                 if (addUSERS == null) return BadRequest("There is a problem with the data!");
                 return Ok(addUSERS);
@@ -75,7 +86,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateUser/{id}")]
-        public async Task<IActionResult> UpdateUsers([FromForm] USERS USERSDTO, string id)
+        public async Task<IActionResult> UpdateUsers(UpdateUserDTO USERSDTO, string id)
         {
             try
             {
@@ -83,7 +94,8 @@ namespace webapi.Controllers
                 {
                     return BadRequest("THe data is empty");
                 }
-                var updateUSERS = await user.UpdateUsers(USERSDTO, id);
+                var getUser = mapper.Map<USERS>(USERSDTO);
+                var updateUSERS = await user.UpdateUsers(getUser, USERSDTO.PASSWORD, id);
 
                 if (updateUSERS == null) return BadRequest("There is a problem with the data!");
                 return Ok(updateUSERS);
@@ -115,5 +127,29 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        //[AllowAnonymous]
+        //[HttpPost("login")]
+        //public async Task<IActionResult> LoginUser(USERS userLoginDTO)
+        //{
+        //    try
+        //    {
+        //        var userLogged = await user.Login(userLoginDTO.EMAIL, userLoginDTO.PASSWORD);
+        //        if (userLogged == null) { return Unauthorized($"The credentials for {userLoginDTO.EMAIL} are wrong!"); }
+        //        var tokenResult = token.createToken(userLogged);
+
+
+
+        //        if (userLogged != null && tokenResult != null)
+        //        {
+        //            return Ok(new { token = tokenResult, name = userLogged.FULLNAME, role = userLogged.ROLE.ROLE });
+        //        }
+        //        return BadRequest("The tocken expired");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest($"The message is: {ex.Message}");
+        //    }
+
+        //}
     }
 }

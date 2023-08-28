@@ -1,5 +1,8 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using webapi.Data;
 using webapi.Interfaces.Audits;
 using webapi.Interfaces.Certification;
@@ -8,6 +11,7 @@ using webapi.Interfaces.Complete_process_task;
 using webapi.Interfaces.Flags;
 using webapi.Interfaces.Isorule;
 using webapi.Interfaces.No_Accordance;
+using webapi.Interfaces.Position;
 using webapi.Interfaces.Process;
 using webapi.Interfaces.Risks;
 using webapi.Interfaces.Roles;
@@ -37,8 +41,23 @@ builder.Services.AddCors(o =>
 builder.Services.AddSingleton<DbConnection>();
 //builder.Services.AddDbContext<DbConnection>(options=> options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
+//adding the claims permision
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidateAudience = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Token"]))
+    };
+});
+
 //Mapper 
 builder.Services.AddAutoMapper(typeof(RolesMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(UsersMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(IsoRuleMapper).Assembly);
 
 //Interfaces
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -53,6 +72,7 @@ builder.Services.AddScoped<INoAccordanceRepository, NoAccordanceRepository>();
 builder.Services.AddScoped<IRisksRepository, RisksRepository>();
 builder.Services.AddScoped<ITasksRepository, TasksRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

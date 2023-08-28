@@ -19,7 +19,9 @@ namespace webapi.Interfaces.Flags
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var addFlags = await conn.QueryAsync<FLAGS>("ISO.SP_ADD_FLAG", new { @IDRULE = flag.ISORULE, @FLAGNAME= flag.FLAGNAME}, 
+                var addFlags = await conn.QueryAsync<FLAGS, ISORULE, FLAGS>("ISO.SP_ADD_FLAG", map: (flag, rule) => { flag.ISORULE = rule; return flag; },
+                    new { @IDRULE = flag.IDRULE, @FLAGNAME = flag.FLAGNAME },
+                    splitOn:"IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -39,7 +41,9 @@ namespace webapi.Interfaces.Flags
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllFLags = await conn.QueryAsync<FLAGS>("ISO.SP_GET_ALL_FLAG", commandType: System.Data.CommandType.StoredProcedure);
+                var getAllFLags = await conn.QueryAsync<FLAGS, ISORULE, FLAGS>("ISO.SP_GET_ALL_FLAG", map: (flag, rule) => { flag.ISORULE = rule; return flag; },
+                    splitOn: "IDRULE",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return (List<FLAGS>)getAllFLags;
@@ -57,7 +61,10 @@ namespace webapi.Interfaces.Flags
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getFlagById = await conn.QueryAsync<FLAGS>("ISO.SP_GET_FLAG_BY_ID ", new {@IDFLAG = id}, commandType: System.Data.CommandType.StoredProcedure);
+                var getFlagById = await conn.QueryAsync<FLAGS, ISORULE, FLAGS>("ISO.SP_GET_FLAG_BY_ID ", map: (flag, rule) => { flag.ISORULE = rule; return flag; },
+                    new {@IDFLAGS = id},
+                     splitOn: "IDRULE",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 var result = MappingFlags(getFlagById);
                 return result;
             }
@@ -72,7 +79,8 @@ namespace webapi.Interfaces.Flags
         {
             using var conn = db.GetConnection();
             conn.Open();
-            var removeFlag = await conn.QueryAsync<FLAGS>("ISO.SP_REMOVE_FLAG", new { @IDFLAG = id });
+            var removeFlag = await conn.QueryAsync<FLAGS, ISORULE, FLAGS>("ISO.SP_REMOVE_FLAG", map: (flag, rule) => { flag.ISORULE = rule; return flag; },
+                new { @IDFLAGS = id },splitOn: "IDRULE",commandType: System.Data.CommandType.StoredProcedure);
             var result = MappingFlags(removeFlag);
             return result;
         }
@@ -80,7 +88,9 @@ namespace webapi.Interfaces.Flags
         public async Task<FLAGS> UpdateFlags(FLAGS flag, string id)
         {
             using var conn = db.GetConnection();
-            var updateFlag= await conn.QueryAsync<FLAGS>("ISO.SP_UPDATE_FLAG ", new { @IDRULE = flag.ISORULE, @FLAGNAME = flag.FLAGNAME },
+            var updateFlag= await conn.QueryAsync<FLAGS, ISORULE, FLAGS>("ISO.SP_UPDATE_FLAG ", map: (flag, rule) => { flag.ISORULE = rule; return flag; },
+                new { @IDRULE = flag.IDRULE, @FLAGNAME = flag.FLAGNAME, @IDFLAGS= id },
+                splitOn: "IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
             var result = MappingFlags(updateFlag);
             return result;
@@ -91,7 +101,7 @@ namespace webapi.Interfaces.Flags
             foreach (var item in FlagList)
             {
                 flag.IDFLAGS = item.IDFLAGS;
-                flag.IDISORULE = item.IDISORULE;
+                flag.IDRULE = item.IDRULE;
                 flag.FLAGNAME = item.FLAGNAME;
                 flag.CREATEDATE = item.CREATEDATE;
                 flag.UPDATEDATE = item.UPDATEDATE;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.Common;
 using webapi.DTO.Audits;
@@ -12,10 +13,12 @@ namespace webapi.Controllers
     public class AuditController : ControllerBase
     {
         private readonly IAuditRepository audit;
+        private readonly IMapper mapper;
 
-        public AuditController(IAuditRepository audit)
+        public AuditController(IAuditRepository audit, IMapper mapper)
         {
             this.audit = audit;
+            this.mapper = mapper;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAudit()
@@ -32,18 +35,19 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addAudit")]
-        public async Task<IActionResult> AddAudit([FromForm] AUDITS addAuditsDTO)
+        public async Task<IActionResult> AddAudit(AddAuditsDTO addAuditsDTO)
         {
             if (addAuditsDTO == null)
             {
                 return BadRequest("No ingrese valores en blanco");
             }
-            var addAudit = await audit.AddAudits(addAuditsDTO);
+            var getAudits = mapper.Map<AUDITS>(addAuditsDTO);   
+            var addAudit = await audit.AddAudits(getAudits);
             return Ok(addAudit);
         }
 
         [HttpPut("updateAudit/{id}")]
-        public async Task<IActionResult> UpdateAudit([FromForm] AUDITS addAuditDTO, string id)
+        public async Task<IActionResult> UpdateAudit(AUDITS addAuditDTO, string id)
         {
             if ( addAuditDTO == null)
             {
@@ -56,7 +60,7 @@ namespace webapi.Controllers
         [HttpDelete("deleteAudit/{id}")]
         public async Task<IActionResult> DeleteAudit(string id)
         {
-            if (!string.IsNullOrEmpty(id)) return BadRequest("El id esta vacio");
+            if (string.IsNullOrEmpty(id)) return BadRequest("El id esta vacio");
 
             var deleteUser = await audit.RemoveAudits(id);
 

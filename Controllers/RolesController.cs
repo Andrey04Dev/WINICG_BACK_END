@@ -45,10 +45,9 @@ namespace webapi.Controllers
 
         }
         [HttpPut("updateRole/{id}")]
-        public async Task<IActionResult> UpdateRole(AddRolesDTO roles, string id)
+        public async Task<IActionResult> UpdateRole(ROLES roles, string id)
         {
-            var getRole = mapper.Map<ROLES>(roles);
-            var updateRole = await _role.UpdateRoles(getRole,id);
+            var updateRole = await _role.UpdateRoles(roles, id);
             return Ok(updateRole);
         }
 

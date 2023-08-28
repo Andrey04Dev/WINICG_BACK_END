@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using webapi.Data;
@@ -23,13 +24,15 @@ namespace webapi.Interfaces.Isorule
                 var addRule = await conn.QueryAsync<ISORULE>("ISO.SP_ADD_ISORULE",
                     new
                     {
-                        @IDAUDIT = rule.IDAUDIT,
+                        @IDAUDIT = rule.IDAUDIT == "" ?  null :  rule.IDAUDIT,
                         @IDCERTIFICATION = rule.IDCERTIFICATION,
-                        @IDNAMERULE = rule.NAMERULE,
-                        @IDCODERULE = rule.CODERULE,
+                        @NAMERULE = rule.NAMERULE,
+                        @CODERULE = rule.CODERULE,
                         @RULE_DESCRIPTION = rule.RULE_DESCRIPTION
                     }, 
                     commandType: CommandType.StoredProcedure );
+                conn.Close();
+                conn.Dispose();
                 var result = MappingIsorule(addRule);
                 return result;
             }
@@ -46,7 +49,10 @@ namespace webapi.Interfaces.Isorule
             {
                 using var conn =  db.GetConnection();
                 conn.Open();
-                var getAllIsorule = await conn.QueryAsync<ISORULE>("ISO.SP_GET_ALL_ISORULE", commandType: CommandType.StoredProcedure);
+                var getAllIsorule = await conn.QueryAsync<ISORULE,CERTIFICATION,AUDITS,ISORULE>("ISO.SP_GET_ALL_ISORULE",
+                   map: (isorule, certification, audits) => { isorule.CERTIFICATION = certification; isorule.AUDITS = audits; return isorule; },
+                    splitOn: "IDCERTIFICATION, IDAUDITS",
+                    commandType: CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return (List<ISORULE>)getAllIsorule;
@@ -83,7 +89,7 @@ namespace webapi.Interfaces.Isorule
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeIsoRule = await conn.QueryAsync<ISORULE>("ISO.SP_DELETE_ISORULE", new { @IDRULE= id}, commandType: CommandType.StoredProcedure);
+                var removeIsoRule = await conn.QueryAsync<ISORULE>("ISO.SP_REMOVE_ISORULE", new { @IDRULE= id}, commandType: CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 var result = MappingIsorule(removeIsoRule);
@@ -104,10 +110,11 @@ namespace webapi.Interfaces.Isorule
                 conn.Open();
                 var updateRule = await conn.QueryAsync<ISORULE>("ISO.SP_UPDATE_ISORULE", new
                 {
+                    @IDRULE = id,
                     @IDAUDIT = rule.IDAUDIT,
                     @IDCERTIFICATION = rule.IDCERTIFICATION,
-                    @IDNAMERULE = rule.NAMERULE,
-                    @IDCODERULE = rule.CODERULE,
+                    @NAMERULE = rule.NAMERULE,
+                    @CODERULE = rule.CODERULE,
                     @RULE_DESCRIPTION = rule.RULE_DESCRIPTION
                 },
                     commandType: CommandType.StoredProcedure);
@@ -125,7 +132,7 @@ namespace webapi.Interfaces.Isorule
             ISORULE isorule = new ISORULE();
             foreach (var item in isoRuleList)
             {
-                isorule.IDISORULE = item.IDISORULE;
+                isorule.IDRULE = item.IDRULE;
                 isorule.IDCERTIFICATION = item.IDCERTIFICATION;
                 isorule.IDAUDIT = item.IDAUDIT;
                 isorule.NAMERULE = item.NAMERULE;

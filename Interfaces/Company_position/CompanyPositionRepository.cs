@@ -22,12 +22,13 @@ namespace webapi.Interfaces.Company_position
                 conn.Open();
                 var addPosition = await conn.QueryAsync<COMPANY_POSITION>("ORG.SP_ADD_COMPANY_POSITION",
                     new {
-                        company.IDUSER, 
-                        company.IDPROCESS, 
-                        company.MANDATED,
-                        company.DESCRIPTION,
-                        company.RESPONSABILITIES, 
-                        company.PROFILE_POSITION},
+                        @IDUSER=company.IDUSER,
+                        @IDPROCESS=company.IDPROCESS,
+                        @MANDATED=company.MANDATED,
+                        @DESCRIPTION=company.DESCRIPTION,
+                        @RESPONSABILITIES=company.RESPONSABILITIES,
+                        @PROFILE_POSITION=company.PROFILE_POSITION,
+                    },
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -47,7 +48,10 @@ namespace webapi.Interfaces.Company_position
             {
                 using var conn =  db.GetConnection();
                 conn.Open();
-                var getCompanyPosition = await  conn.QueryAsync<COMPANY_POSITION>("ORG.SP_GET_ALL_COMPANY_POSITION", commandType: System.Data.CommandType.StoredProcedure);
+                var getCompanyPosition = await  conn.QueryAsync<COMPANY_POSITION,USERS, PROCESS, COMPANY_POSITION>("ORG.SP_GET_ALL_COMPANY_POSITION",
+                    map: (company,user, process) => { company.USERS = user; company.PROCESS = process; return company; },
+                    splitOn: "IDUSER,IDPROCESS",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return (List<COMPANY_POSITION>)getCompanyPosition;
@@ -66,7 +70,10 @@ namespace webapi.Interfaces.Company_position
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var GetPositionById = await conn.QueryAsync<COMPANY_POSITION>("ORG.SP_GET_POSITION_BY_ID",new { @IDCOMPANYPOSITION =id }, 
+                var GetPositionById = await conn.QueryAsync<COMPANY_POSITION, USERS, PROCESS, COMPANY_POSITION>("ORG.SP_GET_POSITION_BY_ID",
+                    map: (company, user, process) => { company.USERS = user; company.PROCESS = process; return company; },
+                    new { @IDCOMPANYPOSITION =id },
+                    splitOn: "IDUSER,IDPROCESS",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -86,7 +93,10 @@ namespace webapi.Interfaces.Company_position
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var RemovePosition = await conn.QueryAsync<COMPANY_POSITION>("ORG.SP_REMOVE_COMPANY_POSITION", new { @IDCOMPANYPOSITION = id }, 
+                var RemovePosition = await conn.QueryAsync<COMPANY_POSITION, USERS, PROCESS, COMPANY_POSITION>("ORG.SP_REMOVE_COMPANY_POSITION",
+                    map: (company, user, process) => { company.USERS = user; company.PROCESS = process; return company; },
+                    new { @IDCOMPANYPOSITION = id },
+                    splitOn: "IDUSER,IDPROCESS",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -106,15 +116,19 @@ namespace webapi.Interfaces.Company_position
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var UpdatePostion = await conn.QueryAsync<COMPANY_POSITION>($"ORG.SP_UPDATE_COMPANY_POSITION", new
+                var UpdatePostion = await conn.QueryAsync<COMPANY_POSITION, USERS, PROCESS, COMPANY_POSITION>($"ORG.SP_UPDATE_COMPANY_POSITION",
+                    map: (company, user, process) => { company.USERS = user; company.PROCESS = process; return company; },
+                    new
                 {
-                    company.IDUSER,
-                    company.IDPROCESS,
-                    company.MANDATED,
-                    company.DESCRIPTION,
-                    company.RESPONSABILITIES,
-                    company.PROFILE_POSITION
-                },
+                        @IDCOMPANY_POSITION=id,
+                        @IDUSER = company.IDUSER,
+                        @IDPROCESS = company.IDPROCESS,
+                        @MANDATED = company.MANDATED,
+                        @DESCRIPTION = company.DESCRIPTION,
+                        @RESPONSABILITIES = company.RESPONSABILITIES,
+                        @PROFILE_POSITION = company.PROFILE_POSITION,
+                    },
+                    splitOn: "IDUSER,IDPROCESS",
                     commandType: System.Data.CommandType.StoredProcedure);
                     conn.Close();
                 conn.Dispose();

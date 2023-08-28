@@ -20,10 +20,13 @@ namespace webapi.Interfaces.Process
                 using var conn =  db.GetConnection();
                 conn.Open();
                 var addProcess = await conn.QueryAsync<PROCESS>("PRO.SP_ADD_PROCESS",
-                    new {process.IDRULE,
-                        process.CODEPROCESS,
-                        process.CHARGE_PERSON,
-                   process.ROLE_INVOLVES}, 
+                    new {
+                        @IDRULE = process.IDRULE,
+                        @CODEPROCESS = process.CODEPROCESS,
+                        @PROCESSNAME = process.PROCESSNAME,
+                        @CHARGE_PERSON = process.CHARGE_PERSON,
+                        @ROLE_INVOLVES = process.ROLE_INVOLVES
+                    }, 
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -43,7 +46,9 @@ namespace webapi.Interfaces.Process
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllProcess = await conn.QueryAsync<PROCESS>("PRO.SP_GET_ALL_PROCESS", 
+                var getAllProcess = await conn.QueryAsync<PROCESS, ISORULE, PROCESS>("PRO.SP_GET_ALL_PROCESS",
+                    map: (process, isorule) => { process.ISORULE = isorule; return process; },
+                    splitOn:"IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();   
                 conn.Dispose();
@@ -62,7 +67,10 @@ namespace webapi.Interfaces.Process
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getProcessById = await conn.QueryAsync<PROCESS>("PRO.SP_GET_PROCESS_BY_ID", new { @IDPROCESS = id },
+                var getProcessById = await conn.QueryAsync<PROCESS, ISORULE, PROCESS>("PRO.SP_GET_PROCESS_BY_ID",
+                    map: (process, isorule) => { process.ISORULE = isorule; return process; },
+                    new { @IDPROCESS = id },
+                    splitOn: "IDRULE",
                 commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -82,7 +90,10 @@ namespace webapi.Interfaces.Process
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeProcess = await conn.QueryAsync<PROCESS>("PRO.SP_REMOVE_PROCESS", new {@IDPROCESS =  id},
+                var removeProcess = await conn.QueryAsync<PROCESS, ISORULE, PROCESS>("PRO.SP_REMOVE_PROCESS",
+                    map: (process, isorule) => { process.ISORULE = isorule; return process; },
+                    new {@IDPROCESS =  id},
+                    splitOn: "IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 var result= MappingProcess(removeProcess);  
                 return result;
@@ -99,13 +110,18 @@ namespace webapi.Interfaces.Process
             try
             {
                 using var conn = db.GetConnection();
-                var updateProcess = await conn.QueryAsync<PROCESS>("PRO.SP_UPDATE_PROCESS", new
+                var updateProcess = await conn.QueryAsync<PROCESS, ISORULE, PROCESS>("PRO.SP_UPDATE_PROCESS",
+                    map: (process, isorule) => { process.ISORULE = isorule; return process; },
+                    new
                 {
-                    process.IDRULE,
-                    process.CODEPROCESS,
-                    process.CHARGE_PERSON,
-                    process.ROLE_INVOLVES
+                        @IDPROCESS = id,
+                    @IDRULE = process.IDRULE,
+                    @CODEPROCESS = process.CODEPROCESS,
+                    @PROCESSNAME =  process.PROCESSNAME,
+                    @CHARGE_PERSON =process.CHARGE_PERSON,
+                    @ROLE_INVOLVES = process.ROLE_INVOLVES
                 },
+                    splitOn: "IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -126,6 +142,7 @@ namespace webapi.Interfaces.Process
                 process.IDPROCESS = item.IDPROCESS;
                 process.IDRULE = item.IDRULE;
                 process.CODEPROCESS = item.CODEPROCESS;
+                process.PROCESSNAME = item.PROCESSNAME;
                 process.CHARGE_PERSON = item.CHARGE_PERSON; 
                 process.ROLE_INVOLVES = item.ROLE_INVOLVES;
                 process.CREATEDATE = item.CREATEDATE;

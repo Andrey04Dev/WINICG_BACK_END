@@ -19,14 +19,16 @@ namespace webapi.Interfaces.Tasks
             {
                 using var conn =  db.GetConnection();
                 conn.Open();
-                var addTask = await conn.QueryAsync<TASKS>("ISO.SP_ADD_TASK", 
+                var addTask = await conn.QueryAsync<TASKS>("ISO.SP_ADD_TASK",
                     new {
                         @IDUSER=tasks.IDUSER,
                         @IDRULE =tasks.IDRULE,
-                        @IDFLAG=tasks.IDFLAG,
+                        @IDFLAGS=tasks.IDFLAGS,
                         @PROJECT=tasks.PROJECT,
                         @EVENT_TASK=tasks.EVENT_TASK}, 
                     commandType: System.Data.CommandType.StoredProcedure);
+                conn.Close();
+                conn.Dispose();
                 var result = MappingTasks(addTask);
                 return result;
             }
@@ -43,7 +45,11 @@ namespace webapi.Interfaces.Tasks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllTask = await conn.QueryAsync<TASKS>("ISO.SP_GET_ALL_TASK", commandType: System.Data.CommandType.StoredProcedure);
+                var getAllTask = await conn.QueryAsync<TASKS, USERS, ISORULE, FLAGS,TASKS>("ISO.SP_GET_ALL_TASK",
+                    map: (Task,users, isorules,flags) =>{ Task.USERS = users; Task.ISORULE = isorules; Task.FLAGS=flags;  return Task; },
+                   // map: (task, users,isorule, flags) => { task.USERS = users; task.ISORULE = isorule; task.FLAGS = flags;  return task; },
+                    splitOn: "IDFLAGS, IDRULE, IDUSER",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return getAllTask.ToList();
@@ -61,7 +67,10 @@ namespace webapi.Interfaces.Tasks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getTaskById = await conn.QueryAsync<TASKS>("ISO.SP_GET_TASK_BY_ID", new { @IDTASK = id }, 
+                var getTaskById = await conn.QueryAsync<TASKS, USERS, ISORULE, FLAGS, TASKS>("ISO.SP_GET_TASK_BY_ID",
+                    map: (task, users, isorule, flag) => { task.USERS = users; task.ISORULE = isorule; task.FLAGS = flag; return task; },
+                    new { @IDTASK = id },
+                    splitOn: "IDUSER,IDRULE,IDFLAGS",
                     commandType:  System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -81,7 +90,11 @@ namespace webapi.Interfaces.Tasks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeTask = await conn.QueryAsync<TASKS>("ISO_REMOVE_TASK", new {@IDTASKS = id}, commandType: System.Data.CommandType.StoredProcedure );
+                var removeTask = await conn.QueryAsync<TASKS, USERS, ISORULE, FLAGS, TASKS>("ISO_REMOVE_TASK",
+                    map: (task, users, isorule, flag) => { task.USERS = users; task.ISORULE = isorule; task.FLAGS = flag; return task; },
+                    new {@IDTASKS = id},
+                    splitOn: "IDUSER,IDRULE,IDFLAGS",
+                    commandType: System.Data.CommandType.StoredProcedure );
                 conn.Close();
                 conn.Dispose();
                 var result = MappingTasks(removeTask);
@@ -99,13 +112,16 @@ namespace webapi.Interfaces.Tasks
         {
             using var conn = db.GetConnection();
             conn.Open();
-            var updateTask = await conn.QueryAsync<TASKS>("ISO.SP_UPDATE_TASK "
-                ,new {
+            var updateTask = await conn.QueryAsync<TASKS, USERS, ISORULE, FLAGS, TASKS>("ISO.SP_UPDATE_TASK ",
+                map: (task, users, isorule, flag) => { task.USERS = users; task.ISORULE = isorule; task.FLAGS = flag; return task; }
+                , new {
+                        @IDTASKS= id,
                         @IDUSER = tasks.IDUSER,
                         @IDRULE = tasks.IDRULE,
-                        @IDFLAG = tasks.IDFLAG,
+                        @IDFLAGS = tasks.IDFLAGS,
                         @PROJECT = tasks.PROJECT,
-                        @EVENT_TASK = tasks.EVENT_TASK}, 
+                        @EVENT_TASK = tasks.EVENT_TASK},
+                splitOn: "IDUSER,IDRULE,IDFLAGS",
                     commandType: System.Data.CommandType.StoredProcedure);
             var result = MappingTasks(updateTask);
             return result;
@@ -117,7 +133,7 @@ namespace webapi.Interfaces.Tasks
             {
                 task.IDTASK = item.IDTASK;
                 task.IDRULE = item.IDRULE;
-                task.IDFLAG = item.IDFLAG;
+                task.IDFLAGS = item.IDFLAGS;
                 task.IDUSER = item.IDUSER;
                 task.PROJECT = item.PROJECT;
                 task.EVENT_TASK = item.EVENT_TASK;

@@ -7,7 +7,7 @@ namespace webapi.Models
     public class ISORULE
     {
         [Key]
-        public string? IDISORULE { get; set; }
+        public string? IDRULE { get; set; }
         public string? IDCERTIFICATION { get; set; }
         public string? IDAUDIT { get; set; }
         public string? NAMERULE { get; set; }

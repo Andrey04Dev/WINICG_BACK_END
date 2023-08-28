@@ -20,11 +20,16 @@ namespace webapi.Interfaces.No_Accordance
                 using var conn = db.GetConnection(); 
                 conn.Open();
                 var addAccordance = await conn.QueryAsync<NO_ACCORDANCE>("PRO.SP_ADD_NO_ACCORDANCE",
-                    new{@IDPROCESS=accordance.IDPROCESS,
-                        @NAME_ACCORDANCE = accordance.NAME_NO_ACCORDANCE,
-                        @KIND=accordance.KIND, 
-                        @RANKING = accordance.RANKING, 
-                        @AUDIT_DETECT = accordance.AUDIT_DETECT}, 
+                    new{
+                        @IDPROCESS = accordance.IDPROCESS,
+                        @IDAUDIT = accordance.IDAUDIT,
+                        @IDTASK = accordance.IDTASK,
+                        @NAME_NO_ACCORDANCE = accordance.NAME_NO_ACCORDANCE,
+                        @KIND = accordance.KIND,
+                        @RANKING = accordance.RANKING,
+                        @DESCRIPTON = accordance.DESCRIPTION,
+                        @AUDIT_DETECT = accordance.AUDIT_DETECT
+                    }, 
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -44,7 +49,10 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllNoAccordance = await conn.QueryAsync<NO_ACCORDANCE>("PRO.SP_GET_ALL_NO_ACCORDANCE",commandType: System.Data.CommandType.StoredProcedure);
+                var getAllNoAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_GET_ALL_NO_ACCORDANCE",
+                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+                    splitOn:"IDPROCESS",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return (List<NO_ACCORDANCE>)getAllNoAccordance;
@@ -62,8 +70,10 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAccordanceById = await conn.QueryAsync<NO_ACCORDANCE>("PRO.SP_GET_NO_ACCORDANCE_BY_ID",
-                    new { @ID_NO_ACCORDANCE= id }, 
+                var getAccordanceById = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_GET_NO_ACCORDANCE_BY_ID",
+                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+                    new { @IDACCORDANCE= id },
+                    splitOn: "IDPROCESS",
                     commandType: System.Data.CommandType.StoredProcedure);
                 var result =  MappingNoAccordance(getAccordanceById);
                 return result;
@@ -81,7 +91,10 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeAccordance = await conn.QueryAsync<NO_ACCORDANCE>("PRO.SP_REMOVE_NO_ACCORDANCE",new {@ID_NO_ACCORDANCE = id }
+                var removeAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_REMOVE_NO_ACCORDANCE",
+                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+                    new {@IDACCORDANCE = id },
+                    splitOn: "IDPROCESS"
                 , commandType: System.Data.CommandType.StoredProcedure);
                 var result  =  MappingNoAccordance(removeAccordance);
                 return result;
@@ -97,15 +110,22 @@ namespace webapi.Interfaces.No_Accordance
         {
             using var conn = db.GetConnection();  
             conn.Open();
-            var updateAccordance = await conn.QueryAsync<NO_ACCORDANCE>("PRO.SP_UPDATE_NO_ACCORDANCE",
+            var updateAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_UPDATE_NO_ACCORDANCE",
+                map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
                 new
                 {
+                    @IDACCORDANCE = id,
                     @IDPROCESS = accordance.IDPROCESS,
-                    @NAME_ACCORDANCE = accordance.NAME_NO_ACCORDANCE,
+                    @IDAUDIT = accordance.IDAUDIT,
+                    @IDTASK = accordance.IDTASK,
+                    @NAME_NO_ACCORDANCE = accordance.NAME_NO_ACCORDANCE,
                     @KIND = accordance.KIND,
                     @RANKING = accordance.RANKING,
+                    @DESCRIPTON =  accordance.DESCRIPTION,
+                    @STATE =  accordance.STATE,
                     @AUDIT_DETECT = accordance.AUDIT_DETECT
                 },
+                splitOn: "IDPROCESS",
                     commandType: System.Data.CommandType.StoredProcedure);
             var result = MappingNoAccordance(updateAccordance);
             return result;
@@ -118,13 +138,17 @@ namespace webapi.Interfaces.No_Accordance
             {
                 NO_ACCORDANCE.IDACCORDANCE = item.IDACCORDANCE;
                 NO_ACCORDANCE.IDPROCESS = item.IDPROCESS;
+                NO_ACCORDANCE.IDTASK = item.IDTASK;
                 NO_ACCORDANCE.NAME_NO_ACCORDANCE = item.NAME_NO_ACCORDANCE;
                 NO_ACCORDANCE.KIND = item.KIND;
                 NO_ACCORDANCE.AUDIT_DETECT = item.AUDIT_DETECT;
                 NO_ACCORDANCE.RANKING = item.RANKING;
+                NO_ACCORDANCE.DESCRIPTION = item.DESCRIPTION;
+                NO_ACCORDANCE.STATE = item.STATE;
                 NO_ACCORDANCE.CREATEDATE = item.CREATEDATE;
                 NO_ACCORDANCE.UPDATEDATE = item.UPDATEDATE;
                 NO_ACCORDANCE.PROCESS = item.PROCESS;
+                NO_ACCORDANCE.AUDITS = item.AUDITS;
             }
             return NO_ACCORDANCE;
         }

@@ -24,7 +24,7 @@ namespace webapi.Interfaces.Certification
                 var addCertification = await conn.QueryAsync<CERTIFICATION>("ISO.SP_ADD_CERTIFICATION",
                     new {
                         @CERTIFICATION_NAME = certification.CERTIFICATION_NAME,
-                        @CERTIFICATION_DATE = certification.CERTIFICATION_DATE
+                        @CERTIFICATION_DATE = certification.CERTIFICACION_DATE
                     }, 
                 commandType: CommandType.StoredProcedure);
 
@@ -42,7 +42,7 @@ namespace webapi.Interfaces.Certification
 
         public async Task<List<CERTIFICATION>> GetAllCertification()
         {
-            try
+             try
             {
                 using var conn = db.GetConnection();
                 conn.Open();
@@ -65,7 +65,7 @@ namespace webapi.Interfaces.Certification
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getCertificationById = await conn.QueryAsync<CERTIFICATION>("ISO.SP_GET_CERTIFCATION_BY_ID",
+                var getCertificationById = await conn.QueryAsync<CERTIFICATION>("ISO.SP_GET_CERTIFICATION_BY_ID",
                     new {
                     @IDCERTIFICATION = id
                     }, 
@@ -115,11 +115,11 @@ namespace webapi.Interfaces.Certification
                     new
                     {
                         @CERTIFICATION_NAME = certification.CERTIFICATION_NAME,
-                        @CERTIFICATION_DATE = certification.CERTIFICATION_DATE, 
+                        @CERTIFICATION_DATE = certification.CERTIFICACION_DATE, 
                         @IDCERTIFICATION = id
                     }, 
                 commandType: CommandType.StoredProcedure);
-conn.Close();
+                conn.Close();
                 conn.Dispose();
                     
                 var result = MappingCertification(updateCertification);
@@ -137,7 +137,7 @@ conn.Close();
             foreach (var item in certificationList)
             {
                 certification.IDCERTIFICATION = item.IDCERTIFICATION;
-                certification.CERTIFICATION_DATE = item.CERTIFICATION_DATE;
+                certification.CERTIFICACION_DATE = item.CERTIFICACION_DATE;
                 certification.CERTIFICATION_NAME = item.CERTIFICATION_NAME;
                 certification.CREATEDATE = item.CREATEDATE;
                 certification.UPDATEDATE = item.UPDATEDATE;

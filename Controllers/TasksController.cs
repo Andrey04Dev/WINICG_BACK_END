@@ -54,7 +54,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addTask")]
-        public async Task<IActionResult> AddTask([FromForm] TASKS TASKSDTO)
+        public async Task<IActionResult> AddTask( TASKS TASKSDTO)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateTask/{id}")]
-        public async Task<IActionResult> UpdateTask([FromForm] TASKS TASKSDTO, string id)
+        public async Task<IActionResult> UpdateTask( TASKS TASKSDTO, string id)
         {
             try
             {

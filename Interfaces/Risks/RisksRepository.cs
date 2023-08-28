@@ -19,12 +19,16 @@ namespace webapi.Interfaces.Risks
             {
                 using var conn =  db.GetConnection();
                 conn.Open();
-                var addRisk = await conn.QueryAsync<RISKS>("ISO_SP_ADD_RISK", 
+                var addRisk = await conn.QueryAsync<RISKS,ISORULE, RISKS>("ISO.SP_ADD_RISK",
+                    map: (risk, rule) => { risk.ISORULE = rule; return risk; },
                     new {
                         @IDRULE = risks.IDRULE,
-                        @NAMERISK=risks.NAMERISKS,
+                        @IDFILE = risks.IDFILE,
+                        @NAMERISKS =risks.NAMERISKS,
+                        @ORIGEN =  risks.ORIGEN,
                         @CONSEQUENSE=risks.CONSEQUENSE,
                         @SOURCE_RISK= risks.SOURCE_RISK},
+                    splitOn:"IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 var result = MappingRisks(addRisk);
                 return result;
@@ -42,7 +46,10 @@ namespace webapi.Interfaces.Risks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllRisks = await conn.QueryAsync<RISKS>("ISO.SP_GET_ALL_RISK", commandType: System.Data.CommandType.StoredProcedure);
+                var getAllRisks = await conn.QueryAsync<RISKS, ISORULE, RISKS>("ISO.SP_GET_ALL_RISK",
+                    map: (risk, rule) => { risk.ISORULE = rule; return risk; }, 
+                    splitOn:"IDRULE",
+                    commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 return getAllRisks.ToList();
@@ -60,10 +67,13 @@ namespace webapi.Interfaces.Risks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getRiskById =  await conn.QueryAsync<RISKS>("ISO.SP_GET_RISK_BY_ID", new
+                var getRiskById =  await conn.QueryAsync<RISKS, ISORULE, RISKS>("ISO.SP_GET_RISK_BY_ID",
+                    map: (risk, rule) => { risk.ISORULE = rule; return risk; }
+                    , new
                 {
-                    @IDRISK = id
+                    @IDRISKS = id
                 }, 
+                    splitOn:"IDRULE",
                 commandType: System.Data.CommandType.StoredProcedure);
                 var result =  MappingRisks(getRiskById);
                 return result;
@@ -79,7 +89,10 @@ namespace webapi.Interfaces.Risks
         {
             using var conn =  db.GetConnection();   
             conn.Open();
-            var removeRisks = await conn.QueryAsync<RISKS>("ISO.SP_REMOVE_RISK", new {@IDRISK =  id}, commandType: System.Data.CommandType.StoredProcedure);
+            var removeRisks = await conn.QueryAsync<RISKS, ISORULE, RISKS>("ISO.SP_REMOVE_RISK", map: (risk, rule) => { risk.ISORULE = rule; return risk; },
+                new {@IDRISKS =  id},
+                splitOn:"IDRULE",
+                commandType: System.Data.CommandType.StoredProcedure);
             conn.Close();
             conn.Dispose();
             var result = MappingRisks(removeRisks);
@@ -92,15 +105,23 @@ namespace webapi.Interfaces.Risks
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var updateRisk = await conn.QueryAsync<RISKS>($"ISO_SP_UPDATE_RISK",
+                var updateRisk = await conn.QueryAsync<RISKS, ISORULE, RISKS>($"ISO.SP_UPDATE_RISK",
+                    map: (risk, rule) => { risk.ISORULE = rule; return risk; },
                     new
                     {
+                        @IDRISKS = id,
                         @IDRULE = risks.IDRULE,
-                        @NAMERISK = risks.NAMERISKS,
+                        @IDFILE =  risks.IDFILE,
+                        @NAMERISKS = risks.NAMERISKS,
+                        @ORIGEN = risks.ORIGEN,
                         @CONSEQUENSE = risks.CONSEQUENSE,
-                        @SOURCE_RISK = risks.SOURCE_RISK
+                        @SOURCE_RISK = risks.SOURCE_RISK,
+                        @STATE =  risks.STATE,
                     },
+                    splitOn:"IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
+                conn.Close();
+                conn.Dispose();
                 var result = MappingRisks(updateRisk);
                 return result;
             }
@@ -118,11 +139,15 @@ namespace webapi.Interfaces.Risks
             {
                 risk.IDRISKS = item.IDRISKS;
                 risk.IDRULE = item.IDRULE;
+                risk.IDFILE = item.IDFILE;
                 risk.NAMERISKS = item.NAMERISKS;
+                risk.ORIGEN = item.ORIGEN;
                 risk.CONSEQUENSE = item.CONSEQUENSE;
                 risk.SOURCE_RISK = item.SOURCE_RISK;
+                risk.STATE = item.STATE;
                 risk.CREATEDATE = item.CREATEDATE;
                 risk.UPDATEDATE = item.UPDATEDATE;
+                risk.ISORULE = item.ISORULE;
             }
             return risk;
         }

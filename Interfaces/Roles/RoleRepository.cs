@@ -87,7 +87,7 @@ namespace webapi.Interfaces.Roles
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeRoles = conn.QueryAsync<ROLES>("US.DELETE_ROLE", new{@IDROLE = id});
+                var removeRoles = await  conn.QueryAsync<ROLES>("US.DELETE_ROLE", new{@IDROLE = id}, commandType: CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
                 var result = MappingRoles((IEnumerable<ROLES>)removeRoles);
@@ -106,7 +106,7 @@ namespace webapi.Interfaces.Roles
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var updateRole = conn.QueryAsync<ROLES>("US.UPDATE_ROLE", new {@ROLE = roles.ROLE,
+                var updateRole = await conn.QueryAsync<ROLES>("US.UPDATE_ROLE", new {@ROLE = roles.ROLE,
                    @IDROLE= id}, 
                    commandType: CommandType.StoredProcedure);
                 conn.Close();

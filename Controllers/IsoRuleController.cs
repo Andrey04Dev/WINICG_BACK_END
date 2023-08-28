@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using webapi.DTO.Isorule;
 using webapi.Interfaces.Isorule;
 using webapi.Models;
 
@@ -10,10 +12,12 @@ namespace webapi.Controllers
     public class IsoRuleController : ControllerBase
     {
         private readonly IIsoRuleRepository isoRule;
+        private readonly IMapper mapper;
 
-        public IsoRuleController(IIsoRuleRepository isoRule)
+        public IsoRuleController(IIsoRuleRepository isoRule, IMapper mapper)
         {
             this.isoRule = isoRule;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -55,7 +59,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addIsoRule")]
-        public async Task<IActionResult> AddIsoule([FromForm] ISORULE ISORULEDTO)
+        public async Task<IActionResult> AddIsoule(AddIsoruleDTO ISORULEDTO)
         {
             try
             {
@@ -63,7 +67,8 @@ namespace webapi.Controllers
                 {
                     return BadRequest("THe data is empty");
                 }
-                var addISORULE = await isoRule.AddIsoRule(ISORULEDTO);
+                var getIsoRule =  mapper.Map<ISORULE>(ISORULEDTO);
+                var addISORULE = await isoRule.AddIsoRule(getIsoRule);
 
                 if (addISORULE == null) return BadRequest("There is a problem with the data!");
                 return Ok(addISORULE);
@@ -76,7 +81,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateIsoRule/{id}")]
-        public async Task<IActionResult> UpdateIsorule([FromForm] ISORULE ISORULEDTO, string id)
+        public async Task<IActionResult> UpdateIsorule(UpdateIsoRuleDTO ISORULEDTO, string id)
         {
             try
             {
@@ -84,7 +89,8 @@ namespace webapi.Controllers
                 {
                     return BadRequest("THe data is empty");
                 }
-                var updateISORULE = await isoRule.UpdateIsoRule(ISORULEDTO, id);
+                var getIsoRule = mapper.Map<ISORULE>(ISORULEDTO);
+                var updateISORULE = await isoRule.UpdateIsoRule(getIsoRule, id);
 
                 if (updateISORULE == null) return BadRequest("There is a problem with the data!");
                 return Ok(updateISORULE);

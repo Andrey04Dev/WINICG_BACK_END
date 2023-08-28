@@ -54,7 +54,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addRisk")]
-        public async Task<IActionResult> AddRisks([FromForm] RISKS RISKSDTO)
+        public async Task<IActionResult> AddRisks(RISKS RISKSDTO)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateRisk/{id}")]
-        public async Task<IActionResult> UpdateRisk([FromForm] RISKS RISKSDTO, string id)
+        public async Task<IActionResult> UpdateRisk( RISKS RISKSDTO, string id)
         {
             try
             {

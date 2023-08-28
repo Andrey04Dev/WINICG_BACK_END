@@ -9,6 +9,7 @@ namespace webapi.Models
         public string? IDPROCESS { get; set; }
         public string? IDRULE { get; set; }
         public string? CODEPROCESS  { get; set; }
+        public string? PROCESSNAME { get; set; }
         public string? CHARGE_PERSON { get; set; }
         public string? ROLE_INVOLVES { get; set; }
         public DateTime? CREATEDATE { get; set; }

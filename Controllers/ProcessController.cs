@@ -75,7 +75,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateProcess/{id}")]
-        public async Task<IActionResult> UpdateProcess([FromForm] PROCESS PROCESSDTO, string id)
+        public async Task<IActionResult> UpdateProcess(PROCESS PROCESSDTO, string id)
         {
             try
             {

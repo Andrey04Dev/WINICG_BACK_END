@@ -37,7 +37,8 @@ namespace webapi.Interfaces.Audits
         {
             using var conn = connection.GetConnection();
             conn.Open();
-            var GetAudit = await  conn.QueryAsync<AUDITS>("ISO.SP_GET_ALL_AUDITS", commandType: CommandType.StoredProcedure);
+            var GetAudit = await  conn.QueryAsync<AUDITS>("ISO.SP_GET_ALL_AUDITS", 
+                commandType: CommandType.StoredProcedure);
             conn.Close();
             conn.Dispose( );
             return (List<AUDITS>)GetAudit;
@@ -47,7 +48,7 @@ namespace webapi.Interfaces.Audits
         {
             using var conn = connection.GetConnection();
             conn.Open();
-            var GetAudit = await conn.QueryAsync<AUDITS>("ISO.SP_GET_AUDITS_BY_ID", new { @IDAUDITS = id}, commandType: CommandType.StoredProcedure);
+            var GetAudit = await conn.QueryAsync<AUDITS>("ISO.SP_GET_AUDITS_BY_ID", new { @IDAUDIT = id}, commandType: CommandType.StoredProcedure);
             conn.Close();
             conn.Dispose( );    
             var result = MappingAudit(GetAudit);
@@ -62,6 +63,8 @@ namespace webapi.Interfaces.Audits
                 using var conn = connection.GetConnection();
                 conn.Open();
                 var DeleteAudit = await conn.QueryAsync<AUDITS>("ISO.SP_DELETE_AUDIT", new { @IDAUDIT = id}, commandType: CommandType.StoredProcedure);
+                conn.Close();
+                conn.Dispose();
                 var result = MappingAudit(DeleteAudit);
                 return result;
             }
@@ -78,8 +81,9 @@ namespace webapi.Interfaces.Audits
             {
                 using var conn = connection.GetConnection();
                 conn.Open();
-                var DeleteAudit = await conn.QueryAsync<AUDITS>("ISO.SP_DELETE_AUDIT", new
+                var DeleteAudit = await conn.QueryAsync<AUDITS>("ISO.SP_UPDATE_AUDIT", new
                 {
+                    @IDAUDITS= id,
                     @AUDIT_NAME = audits.AUDIT_NAME,
                     @AUDIT_DATE = audits.AUDIT_DATE,
                     @AUDIT_TIME = audits.AUDIT_TIME,
@@ -88,10 +92,11 @@ namespace webapi.Interfaces.Audits
                     @KIND_AUDIT = audits.KIND_AUDIT,
                     @SCOPE_AUDIT = audits.SCOPE_AUDIT,
                     @AUDIT_PROCESS = audits.AUDIT_PROCESS,
-                    @AUDIT_RULE = audits.AUDIT_RULE,
-                    @IDAUDTIS = id
+                    @AUDIT_RULE = audits.AUDIT_RULE
                 },
                 commandType: CommandType.StoredProcedure);
+                conn.Close();
+                conn.Dispose();
                 var result = MappingAudit(DeleteAudit);
                 return result;
             }

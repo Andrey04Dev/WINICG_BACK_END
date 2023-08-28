@@ -55,7 +55,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addCertification")]
-        public async Task<IActionResult> AddCertification([FromForm] CERTIFICATION certificationDTO)
+        public async Task<IActionResult> AddCertification( CERTIFICATION certificationDTO)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateCertification/{id}")]
-        public async Task<IActionResult> UpdateCertification([FromForm] CERTIFICATION certificationDTO, string id)
+        public async Task<IActionResult> UpdateCertification( CERTIFICATION certificationDTO, string id)
         {
             try
             {
