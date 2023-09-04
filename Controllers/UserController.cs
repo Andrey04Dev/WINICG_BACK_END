@@ -16,12 +16,14 @@ namespace webapi.Controllers
         private readonly IUserRepository user;
         //private readonly ITokenServices token;
         private readonly IMapper mapper;
+        private readonly ITokenServices token;
 
-        public UserController(IUserRepository user, IMapper mapper)
+        public UserController(IUserRepository user, IMapper mapper, ITokenServices token)
         {
             this.user = user;
             //this.token = token;
             this.mapper = mapper;
+            this.token = token;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
@@ -127,29 +129,30 @@ namespace webapi.Controllers
                 throw;
             }
         }
-        //[AllowAnonymous]
-        //[HttpPost("login")]
-        //public async Task<IActionResult> LoginUser(USERS userLoginDTO)
-        //{
-        //    try
-        //    {
-        //        var userLogged = await user.Login(userLoginDTO.EMAIL, userLoginDTO.PASSWORD);
-        //        if (userLogged == null) { return Unauthorized($"The credentials for {userLoginDTO.EMAIL} are wrong!"); }
-        //        var tokenResult = token.createToken(userLogged);
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUser(SignInUserDTO userLoginDTO)
+        {
+            try
+            {
+                var userLogged = await user.Login(userLoginDTO.EMAIL, userLoginDTO.PASSWORD);
+                if (userLogged == null) { return Unauthorized($"The credentials for {userLoginDTO.EMAIL} are wrong!"); }
+                var resultUser = mapper.Map<ListUserDTO>(userLogged);
+                var tokenResult = token.createToken(userLogged);
 
 
 
-        //        if (userLogged != null && tokenResult != null)
-        //        {
-        //            return Ok(new { token = tokenResult, name = userLogged.FULLNAME, role = userLogged.ROLE.ROLE });
-        //        }
-        //        return BadRequest("The tocken expired");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest($"The message is: {ex.Message}");
-        //    }
+                if (userLogged != null && tokenResult != null)
+                {
+                    return Ok(new { token = tokenResult, name = userLogged.FULLNAME, role = userLogged.ROLE.ROLE });
+                }
+                return BadRequest("The token expired");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"The message is: {ex.Message}");
+            }
 
-        //}
+        }
     }
 }

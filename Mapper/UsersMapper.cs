@@ -12,6 +12,7 @@ namespace webapi.Mapper
             CreateMap<ListUserDTO, USERS>().ReverseMap();
             CreateMap<AddUserDTO, USERS>().ReverseMap();
             CreateMap<UpdateUserDTO, USERS>().ReverseMap();
+            CreateMap<SignInUserDTO, USERS>();
         }
     }
 }

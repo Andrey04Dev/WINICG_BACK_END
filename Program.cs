@@ -18,6 +18,7 @@ using webapi.Interfaces.Roles;
 using webapi.Interfaces.Tasks;
 using webapi.Interfaces.Users;
 using webapi.Mapper;
+using webapi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,7 @@ builder.Services.AddScoped<IRisksRepository, RisksRepository>();
 builder.Services.AddScoped<ITasksRepository, TasksRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<ITokenServices, TokenServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -7,7 +7,8 @@ namespace webapi.DTO.Users
     {
         public string? IDUSER { get; set; }
         public string? IDROLE { get; set; }
-        public string? ID { get; set; }
+        public string? IDPOSITION { get; set; }
+        public string? CEDULA { get; set; }
         public string? FULLNAME { get; set; }
         public string? EMAIL { get; set; }
         public byte[]? PASSWORDHASH { get; set; }
@@ -16,5 +17,6 @@ namespace webapi.DTO.Users
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         public virtual ROLES? ROLE { get; set; }
+        public virtual POSITION? POSITION { get; set; }
     }
 }

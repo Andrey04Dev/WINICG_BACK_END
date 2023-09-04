@@ -48,7 +48,7 @@ namespace webapi.Interfaces.Tasks
                 var getAllTask = await conn.QueryAsync<TASKS, USERS, ISORULE, FLAGS,TASKS>("ISO.SP_GET_ALL_TASK",
                     map: (Task,users, isorules,flags) =>{ Task.USERS = users; Task.ISORULE = isorules; Task.FLAGS=flags;  return Task; },
                    // map: (task, users,isorule, flags) => { task.USERS = users; task.ISORULE = isorule; task.FLAGS = flags;  return task; },
-                    splitOn: "IDFLAGS, IDRULE, IDUSER",
+                    splitOn: "IDFLAGS,IDUSER, IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();

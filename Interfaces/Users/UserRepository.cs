@@ -33,8 +33,8 @@ namespace webapi.Interfaces.Users
                 users.PASSWORDHASH = passwordHash;
                 users.PASSWORDSALT = passwordSalt;
 
-                var addUser = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_ADD_USER",
-                    map: (user, role) => { user.ROLE = role; return user; },
+                var addUser = await conn.QueryAsync<USERS, ROLES, POSITION, USERS>("US.SP_ADD_USER",
+                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
                     new {
                         @IDROLE = users.IDROLE,
                         @IDPOSITION = users.IDPOSITION,
@@ -44,7 +44,7 @@ namespace webapi.Interfaces.Users
                         @PASSWORDHASH = passwordHash, 
                         @PASSWORDSALT = passwordSalt
                     }, 
-                    splitOn:"IDROLE",
+                    splitOn:"IDROLE, IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -64,8 +64,9 @@ namespace webapi.Interfaces.Users
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllUsers = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_GET_ALL_USERS", map: (user, role) => { user.ROLE = role; return user; },
-                    splitOn: "IDROLE",
+                var getAllUsers = await conn.QueryAsync<USERS, ROLES, POSITION, USERS >("US.SP_GET_ALL_USERS",
+                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
+                    splitOn: "IDROLE,IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -83,9 +84,10 @@ namespace webapi.Interfaces.Users
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getUserByID = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_GET_USER_BY_ID", map: (user, role) => { user.ROLE = role; return user; },
+                var getUserByID = await conn.QueryAsync<USERS, ROLES, POSITION, USERS >("US.SP_GET_USER_BY_ID",
+                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
                     new { @IDUSER = id},
-                    splitOn:"IDROLE",
+                    splitOn: "IDROLE,IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -105,13 +107,13 @@ namespace webapi.Interfaces.Users
 
             using var conn = db.GetConnection();
             conn.Open();
-            userFound = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_LOGIN_USERS",
-            map: (user, role) => { user.ROLE = role; return user; },
+            userFound = await conn.QueryAsync<USERS, ROLES, POSITION, USERS>("US.SP_LOGIN_USERS",
+            map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
              param: new
              {
                  @EMAIL = email
              }
-            , splitOn: "IDROLE",
+            , splitOn: "IDROLE,IDPOSITION",
             commandType: CommandType.StoredProcedure);
 
             if (userFound == null) return null;
@@ -140,10 +142,10 @@ namespace webapi.Interfaces.Users
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeUser = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_REMOVE_USER",
-                    map: (user, role) => { user.ROLE = role; return user; },
+                var removeUser = await conn.QueryAsync<USERS, ROLES, POSITION, USERS >("US.SP_REMOVE_USER",
+                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
                     new { @IDUSER = id }, 
-                    splitOn: "IDROLE",
+                    splitOn: "IDROLE,IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -175,8 +177,8 @@ namespace webapi.Interfaces.Users
                     users.PASSWORDSALT = passwordSalt;
                 }
 
-                var updateUser = await conn.QueryAsync<USERS, ROLES, USERS>("US.SP_UPDATE_USER",
-                    map: (user, role) => { user.ROLE = role; return user; },
+                var updateUser = await conn.QueryAsync<USERS, ROLES, POSITION,USERS>("US.SP_UPDATE_USER",
+                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
                     new
                     {
                         @IDUSER = id,
@@ -189,7 +191,7 @@ namespace webapi.Interfaces.Users
                         @PASSWORDSALT = users.PASSWORDSALT, 
                         @ACTIVE =  users.ACTIVE
                     },
-                    splitOn:"IDROLE",
+                    splitOn: "IDROLE,IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();

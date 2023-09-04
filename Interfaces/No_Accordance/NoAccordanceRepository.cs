@@ -49,9 +49,9 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAllNoAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_GET_ALL_NO_ACCORDANCE",
-                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
-                    splitOn:"IDPROCESS",
+                var getAllNoAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, AUDITS,TASKS, NO_ACCORDANCE>("PRO.SP_GET_ALL_NO_ACCORDANCE",
+                    map: (accordance, process, audits, task) => { accordance.PROCESS = process; accordance.AUDITS = audits; accordance.TASKS = task; return accordance; },
+                    splitOn:"IDPROCESS,IDAUDIT,IDTASK",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -70,10 +70,10 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var getAccordanceById = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_GET_NO_ACCORDANCE_BY_ID",
-                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+                var getAccordanceById = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, AUDITS, TASKS, NO_ACCORDANCE>("PRO.SP_GET_NO_ACCORDANCE_BY_ID",
+                    map: (accordance, process, audits, task) => { accordance.PROCESS = process; accordance.AUDITS = audits; accordance.TASKS = task; return accordance; },
                     new { @IDACCORDANCE= id },
-                    splitOn: "IDPROCESS",
+                    splitOn: "IDPROCESS,IDAUDIT,IDTASK",
                     commandType: System.Data.CommandType.StoredProcedure);
                 var result =  MappingNoAccordance(getAccordanceById);
                 return result;
@@ -91,10 +91,10 @@ namespace webapi.Interfaces.No_Accordance
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var removeAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_REMOVE_NO_ACCORDANCE",
-                    map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+                var removeAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, AUDITS, TASKS, NO_ACCORDANCE>("PRO.SP_REMOVE_NO_ACCORDANCE",
+                    map: (accordance, process, audits, task) => { accordance.PROCESS = process; accordance.AUDITS = audits; accordance.TASKS = task; return accordance; },
                     new {@IDACCORDANCE = id },
-                    splitOn: "IDPROCESS"
+                    splitOn: "IDPROCESS,IDAUDIT,IDTASK"
                 , commandType: System.Data.CommandType.StoredProcedure);
                 var result  =  MappingNoAccordance(removeAccordance);
                 return result;
@@ -110,8 +110,8 @@ namespace webapi.Interfaces.No_Accordance
         {
             using var conn = db.GetConnection();  
             conn.Open();
-            var updateAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, NO_ACCORDANCE>("PRO.SP_UPDATE_NO_ACCORDANCE",
-                map: (accordance, process) => { accordance.PROCESS = process; return accordance; },
+            var updateAccordance = await conn.QueryAsync<NO_ACCORDANCE, PROCESS, AUDITS, TASKS, NO_ACCORDANCE>("PRO.SP_UPDATE_NO_ACCORDANCE",
+                map: (accordance, process, audits, task) => { accordance.PROCESS = process; accordance.AUDITS = audits; accordance.TASKS = task; return accordance; },
                 new
                 {
                     @IDACCORDANCE = id,
@@ -125,7 +125,7 @@ namespace webapi.Interfaces.No_Accordance
                     @STATE =  accordance.STATE,
                     @AUDIT_DETECT = accordance.AUDIT_DETECT
                 },
-                splitOn: "IDPROCESS",
+                splitOn: "IDPROCESS,IDAUDIT,IDTASK",
                     commandType: System.Data.CommandType.StoredProcedure);
             var result = MappingNoAccordance(updateAccordance);
             return result;
