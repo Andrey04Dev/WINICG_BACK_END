@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.No_Accordance
 {
@@ -62,6 +63,22 @@ namespace webapi.Interfaces.No_Accordance
 
                 throw;
             }
+        }
+
+        public async Task<int> GetCountNoAccordance()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM PRO.NO_ACCORDANCE";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
 
         public async Task<NO_ACCORDANCE> GetNoAccordanceById(string id)
@@ -145,6 +162,7 @@ namespace webapi.Interfaces.No_Accordance
                 NO_ACCORDANCE.RANKING = item.RANKING;
                 NO_ACCORDANCE.DESCRIPTION = item.DESCRIPTION;
                 NO_ACCORDANCE.STATE = item.STATE;
+                NO_ACCORDANCE.PERSONCHANGE = item.PERSONCHANGE;
                 NO_ACCORDANCE.CREATEDATE = item.CREATEDATE;
                 NO_ACCORDANCE.UPDATEDATE = item.UPDATEDATE;
                 NO_ACCORDANCE.PROCESS = item.PROCESS;

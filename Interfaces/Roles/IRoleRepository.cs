@@ -10,5 +10,6 @@ namespace webapi.Interfaces.Roles
         Task<ROLES> UpdateRoles(ROLES roles, string id);
         Task<List<ROLES>> GetAllRoles();
         Task<ROLES> GetRolesById(string id);
+        Task<int> GetCountRoles();
     }
 }

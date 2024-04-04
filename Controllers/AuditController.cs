@@ -20,6 +20,12 @@ namespace webapi.Controllers
             this.audit = audit;
             this.mapper = mapper;
         }
+        [HttpGet("getCountAudit")]
+        public async Task<IActionResult> GetCountAudit()
+        {
+            var getAudit = await audit.GetCountAudit();
+            return Ok(getAudit);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllAudit()
         {

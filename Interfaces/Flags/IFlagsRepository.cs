@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Flags
         Task<FLAGS> UpdateFlags(FLAGS flag, string id);
         Task<List<FLAGS>> GetAllFlags();
         Task<FLAGS> GetFlagsById(string id);
+        Task<int> GetCountFlags();
     }
 }

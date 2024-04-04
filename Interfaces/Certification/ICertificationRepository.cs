@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Certification
         Task<CERTIFICATION> UpdateCertification(CERTIFICATION certification, string id);
         Task<List<CERTIFICATION>> GetAllCertification();
         Task<CERTIFICATION> GetCertificationById(string id);
+        Task<int> GetCountCertification();
     }
 }

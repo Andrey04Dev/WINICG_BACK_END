@@ -55,6 +55,22 @@ namespace webapi.Interfaces.Audits
             return result;
         }
 
+        public async Task<int> GetCountAudit()
+        {
+            using var conn = connection.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM ISO.AUDITS";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result=0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
+        }
+
         public async Task<AUDITS> RemoveAudits(string id)
         {
 
@@ -111,7 +127,7 @@ namespace webapi.Interfaces.Audits
             AUDITS audit = new AUDITS();
             foreach (var item in AuditList)
             {
-                audit.IDAUDITS = item.IDAUDITS;
+                audit.IDAUDIT = item.IDAUDIT;
                 audit.AUDIT_NAME = item.AUDIT_NAME;
                 audit.AUDIT_DATE = item.AUDIT_DATE;
                 audit.AUDIT_TIME = item.AUDIT_TIME;
@@ -121,6 +137,7 @@ namespace webapi.Interfaces.Audits
                 audit.SCOPE_AUDIT = item.SCOPE_AUDIT;
                 audit.AUDIT_PROCESS = item.AUDIT_PROCESS;
                 audit.AUDIT_RULE = item.AUDIT_RULE;
+                audit.PERSONCHANGE = item.PERSONCHANGE;
                 audit.CREATEDATE = item.CREATEDATE;
                 audit.UPDATEDATE = item.UPDATEDATE;
             }

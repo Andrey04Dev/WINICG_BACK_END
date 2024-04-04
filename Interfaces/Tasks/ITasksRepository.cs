@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Tasks
         Task<TASKS> UpdateTasks(TASKS tasks, string id);
         Task<List<TASKS>> GetAllTasks();
         Task<TASKS> GetTasksById(string id);
+        Task<int> GetCountTask();
     }
 }

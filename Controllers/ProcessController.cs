@@ -30,6 +30,21 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        [HttpGet("getCountProcess")]
+        public async Task<IActionResult> GetCountProcess()
+        {
+            try
+            {
+                var getProcess = await process.GetCountProcess();
+                if (getProcess == null) { return BadRequest("There is not a data!"); }
+                return Ok(getProcess);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProcessById(string id)
         {

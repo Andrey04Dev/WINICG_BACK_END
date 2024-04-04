@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Risks
 {
@@ -23,11 +24,12 @@ namespace webapi.Interfaces.Risks
                     map: (risk, rule) => { risk.ISORULE = rule; return risk; },
                     new {
                         @IDRULE = risks.IDRULE,
-                        @IDFILE = risks.IDFILE,
                         @NAMERISKS =risks.NAMERISKS,
                         @ORIGEN =  risks.ORIGEN,
                         @CONSEQUENSE=risks.CONSEQUENSE,
-                        @SOURCE_RISK= risks.SOURCE_RISK},
+                        @SOURCE_RISK= risks.SOURCE_RISK,
+                        @STATE =  risks.STATE,
+                    },
                     splitOn:"IDRULE",
                     commandType: System.Data.CommandType.StoredProcedure);
                 var result = MappingRisks(addRisk);
@@ -59,6 +61,22 @@ namespace webapi.Interfaces.Risks
 
                 throw;
             }
+        }
+
+        public async Task<int> GetCountRisks()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM ISO.RISKS";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
 
         public async Task<RISKS> GetRisksById(string id)
@@ -111,7 +129,6 @@ namespace webapi.Interfaces.Risks
                     {
                         @IDRISKS = id,
                         @IDRULE = risks.IDRULE,
-                        @IDFILE =  risks.IDFILE,
                         @NAMERISKS = risks.NAMERISKS,
                         @ORIGEN = risks.ORIGEN,
                         @CONSEQUENSE = risks.CONSEQUENSE,
@@ -139,12 +156,12 @@ namespace webapi.Interfaces.Risks
             {
                 risk.IDRISKS = item.IDRISKS;
                 risk.IDRULE = item.IDRULE;
-                risk.IDFILE = item.IDFILE;
                 risk.NAMERISKS = item.NAMERISKS;
                 risk.ORIGEN = item.ORIGEN;
                 risk.CONSEQUENSE = item.CONSEQUENSE;
                 risk.SOURCE_RISK = item.SOURCE_RISK;
                 risk.STATE = item.STATE;
+                risk.QUANTITY = item.QUANTITY;
                 risk.CREATEDATE = item.CREATEDATE;
                 risk.UPDATEDATE = item.UPDATEDATE;
                 risk.ISORULE = item.ISORULE;

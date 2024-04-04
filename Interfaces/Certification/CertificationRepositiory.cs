@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Certification
 {
@@ -82,6 +83,22 @@ namespace webapi.Interfaces.Certification
             }
         }
 
+        public async Task<int> GetCountCertification()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM ISO.CERTIFICATION";
+            var GetCertification = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetCertification)
+            {
+                result = audit;
+            }
+            return result;
+        }
+
         public async Task<CERTIFICATION> RemoveCertification(string id)
         {
             try
@@ -139,6 +156,7 @@ namespace webapi.Interfaces.Certification
                 certification.IDCERTIFICATION = item.IDCERTIFICATION;
                 certification.CERTIFICACION_DATE = item.CERTIFICACION_DATE;
                 certification.CERTIFICATION_NAME = item.CERTIFICATION_NAME;
+                certification.PERSONCHANGE = item.PERSONCHANGE;
                 certification.CREATEDATE = item.CREATEDATE;
                 certification.UPDATEDATE = item.UPDATEDATE;
             }

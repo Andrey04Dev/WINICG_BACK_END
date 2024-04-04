@@ -29,6 +29,15 @@ namespace webapi.Controllers
             
         }
 
+        [HttpGet("getCountRoles")]
+        public async Task<IActionResult> GetCountRoles()
+        {
+            var getRoles = await _role.GetCountRoles();
+            //var result = _mapper.Map<List<ListAuditsDTO>>(getRoles);
+            return Ok(getRoles);
+
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRolesById(string id)
         {

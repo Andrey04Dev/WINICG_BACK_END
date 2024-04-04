@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Process
 {
@@ -22,7 +23,6 @@ namespace webapi.Interfaces.Process
                 var addProcess = await conn.QueryAsync<PROCESS>("PRO.SP_ADD_PROCESS",
                     new {
                         @IDRULE = process.IDRULE,
-                        @CODEPROCESS = process.CODEPROCESS,
                         @PROCESSNAME = process.PROCESSNAME,
                         @CHARGE_PERSON = process.CHARGE_PERSON,
                         @ROLE_INVOLVES = process.ROLE_INVOLVES
@@ -59,6 +59,22 @@ namespace webapi.Interfaces.Process
 
                 throw;
             }
+        }
+
+        public async Task<int> GetCountProcess()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM PRO.PROCESS";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
 
         public async Task<PROCESS> GetProcessById(string id)
@@ -116,7 +132,6 @@ namespace webapi.Interfaces.Process
                 {
                         @IDPROCESS = id,
                     @IDRULE = process.IDRULE,
-                    @CODEPROCESS = process.CODEPROCESS,
                     @PROCESSNAME =  process.PROCESSNAME,
                     @CHARGE_PERSON =process.CHARGE_PERSON,
                     @ROLE_INVOLVES = process.ROLE_INVOLVES
@@ -141,10 +156,10 @@ namespace webapi.Interfaces.Process
             {
                 process.IDPROCESS = item.IDPROCESS;
                 process.IDRULE = item.IDRULE;
-                process.CODEPROCESS = item.CODEPROCESS;
                 process.PROCESSNAME = item.PROCESSNAME;
                 process.CHARGE_PERSON = item.CHARGE_PERSON; 
                 process.ROLE_INVOLVES = item.ROLE_INVOLVES;
+                process.PERSONCHANGE = item.PERSONCHANGE;   
                 process.CREATEDATE = item.CREATEDATE;
                 process.UPDATEDATE = item.UPDATEDATE;
                 process.ISORULE = item.ISORULE;

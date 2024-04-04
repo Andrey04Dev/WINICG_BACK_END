@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Isorule
         Task<ISORULE> UpdateIsoRule(ISORULE rule, string id);
         Task<List<ISORULE>> GetAllIsoRule();
         Task<ISORULE> GetIsoRuleById(string id);
+        Task<int> GetCountIsoRule();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Flags
 {
@@ -55,6 +56,22 @@ namespace webapi.Interfaces.Flags
             }
         }
 
+        public async Task<int> GetCountFlags()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM ISO.FLAGS";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
+        }
+
         public async Task<FLAGS> GetFlagsById(string id)
         {
             try
@@ -100,9 +117,10 @@ namespace webapi.Interfaces.Flags
             FLAGS flag = new FLAGS();
             foreach (var item in FlagList)
             {
-                flag.IDFLAGS = item.IDFLAGS;
+                flag.IDFLAG = item.IDFLAG;
                 flag.IDRULE = item.IDRULE;
                 flag.FLAGNAME = item.FLAGNAME;
+                flag.PERSONCHANGE= item.PERSONCHANGE;
                 flag.CREATEDATE = item.CREATEDATE;
                 flag.UPDATEDATE = item.UPDATEDATE;
             }

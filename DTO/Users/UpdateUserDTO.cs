@@ -4,6 +4,7 @@
     {
         public string? IDUSER { get; set; }
         public string? IDROLE { get; set; }
+        public string? IDPOSITION { get; set; }
         public string? CEDULA { get; set; }
         public string? FULLNAME { get; set; }
         public string? EMAIL { get; set; }

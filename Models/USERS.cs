@@ -15,6 +15,7 @@ namespace webapi.Models
         public byte[]? PASSWORDHASH { get; set; }
         public byte[]? PASSWORDSALT { get; set; }
         public bool? ACTIVE { get; set; }
+        public string? CHANGEPERSON { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         [ForeignKey("IDROLE")]

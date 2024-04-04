@@ -7,6 +7,7 @@ namespace webapi.Models
         [Key]
         public string? IDROLE { get; set; }
         public string? ROLE { get; set; }
+        public string? PERSONCHANGE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
     }

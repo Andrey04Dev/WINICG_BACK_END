@@ -10,5 +10,6 @@ namespace webapi.Interfaces.Users
         Task<List<USERS>> GetAllUsers();
         Task<USERS> GetUsersById(string id);
         Task <USERS> Login(string email, string password);
+        Task<int> GetCountUser();
     }
 }

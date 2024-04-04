@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Risks
         Task<RISKS> UpdateRisks(RISKS risks, string id);
         Task<List<RISKS>> GetAllRisks();
         Task<RISKS> GetRisksById(string id);
+        Task<int> GetCountRisks();
     }
 }

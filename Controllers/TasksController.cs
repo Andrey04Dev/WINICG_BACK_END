@@ -30,6 +30,23 @@ namespace webapi.Controllers
                 throw;
             }
         }
+
+        [HttpGet("getCountTask")]
+        public async Task<IActionResult> GetCountTask()
+        {
+            try
+            {
+                var getTask = await tasks.GetCountTask();
+                if (getTask == null) { return BadRequest("There is not a data!"); }
+                return Ok(getTask);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById(string id)
         {

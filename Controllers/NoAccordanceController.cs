@@ -30,6 +30,21 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        [HttpGet("getCountNoAccordance")]
+        public async Task<IActionResult> GetCountNoAccordance()
+        {
+            try
+            {
+                var getAccordance = await noAccordance.GetCountNoAccordance();
+                if (getAccordance == null) { return BadRequest("There is not a data!"); }
+                return Ok(getAccordance);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNoAccordanceById(string id)
         {

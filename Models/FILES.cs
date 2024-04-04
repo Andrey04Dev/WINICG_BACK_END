@@ -7,10 +7,9 @@ namespace webapi.Models
     {
         [Key]
         public string? IDFILE { get; set; }
-        [ForeignKey("IDAUDITS")]
         public string? IDMODULE { get; set; }
+        public string? FILENAME { get; set; }
         public string? EXTENSION { get; set; }
-        public string? URLFILE { get; set; }
         public byte[]? BINARY_FILE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }

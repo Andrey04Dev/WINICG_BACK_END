@@ -13,6 +13,7 @@ namespace webapi.Models
         public string? DESCRIPTION { get; set; }
         public string? RESPONSABILITIES { get; set; }
         public string? PROFILE_POSITION { get; set; }
+        public string? PERSONCHANGE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         [ForeignKey("IDUSER")]

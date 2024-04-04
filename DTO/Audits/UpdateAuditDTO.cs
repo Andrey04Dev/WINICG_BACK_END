@@ -2,7 +2,7 @@
 {
     public class UpdateAuditDTO
     {
-        public string? IDAUDITS { get; set; }
+        public string? IDAUDIT { get; set; }
         public string? AUDIT_NAME { get; set; }
         public DateTime? AUDIT_DATE { get; set; }
         public TimeSpan? AUDIT_TIME { get; set; }

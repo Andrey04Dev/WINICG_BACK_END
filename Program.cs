@@ -8,7 +8,9 @@ using webapi.Interfaces.Audits;
 using webapi.Interfaces.Certification;
 using webapi.Interfaces.Company_position;
 using webapi.Interfaces.Complete_process_task;
+using webapi.Interfaces.Files;
 using webapi.Interfaces.Flags;
+using webapi.Interfaces.Historial;
 using webapi.Interfaces.Isorule;
 using webapi.Interfaces.No_Accordance;
 using webapi.Interfaces.Position;
@@ -59,6 +61,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAutoMapper(typeof(RolesMapper).Assembly);
 builder.Services.AddAutoMapper(typeof(UsersMapper).Assembly);
 builder.Services.AddAutoMapper(typeof(IsoRuleMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(HistorialMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(RiskMapper).Assembly);
 
 //Interfaces
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -75,6 +79,8 @@ builder.Services.AddScoped<ITasksRepository, TasksRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IHistorialRepository, HistorialRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

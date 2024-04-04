@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Position
         Task<POSITION> UpdatePosition(POSITION position, string id);
         Task<List<POSITION>> GetAllPosition();
         Task<POSITION> GetPositionById(string id);
+        Task<int> GetCountPosition();
     }
 }

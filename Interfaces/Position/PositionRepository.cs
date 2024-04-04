@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Position
 {
@@ -55,6 +56,22 @@ namespace webapi.Interfaces.Position
 
                 throw;
             }
+        }
+
+        public async Task<int> GetCountPosition()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM US.POSITION";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
 
         public async Task<POSITION> GetPositionById(string id)
@@ -120,6 +137,7 @@ namespace webapi.Interfaces.Position
                 position.POSITIONJOB = item.POSITIONJOB;
                 position.DESCRIPTION = item.DESCRIPTION;
                 position.AREA = item.AREA;
+                position.PERSONCHANGE = item.PERSONCHANGE;
                 position.CREATEDATE = item.CREATEDATE;
                 position.UPDATEDATE = item.UPDATEDATE;
             }

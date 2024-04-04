@@ -15,6 +15,21 @@ namespace webapi.Controllers
         {
             this.flags = flags;
         }
+        [HttpGet("getCountFlag")]
+        public async Task<IActionResult> GetCountFlags()
+        {
+            try
+            {
+                var getFlags = await flags.GetCountFlags();
+                if (getFlags == null) { return BadRequest("There is not a data!"); }
+                return Ok(getFlags);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllFlags()
         {

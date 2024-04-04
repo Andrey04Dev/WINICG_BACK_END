@@ -40,6 +40,21 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        [HttpGet("getCountUser")]
+        public async Task<IActionResult> GetCountUsers()
+        {
+            try
+            {
+                var getUsers = await user.GetCountUser();
+                if (getUsers == null) { return BadRequest("There is not a data!"); }
+                return Ok(getUsers);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
        {

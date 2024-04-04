@@ -69,9 +69,9 @@ C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\staticwebass
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.webapi.props
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\staticwebassets.pack.json
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\scopedcss\bundle\webapi.styles.css
-C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\webapi.csproj.CopyComplete
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\webapi.dll
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\refint\webapi.dll
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\webapi.pdb
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\webapi.genruntimeconfig.cache
 C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\ref\webapi.dll
+C:\Users\andre\Documents\Programming\WINICG\webapi\obj\Debug\net7.0\webapi.csproj.Up2Date

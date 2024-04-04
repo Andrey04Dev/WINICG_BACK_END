@@ -9,5 +9,6 @@ namespace webapi.Interfaces.Process
         Task<PROCESS> UpdateProcess(PROCESS process, string id);
         Task<List<PROCESS>> GetAllProcess();
         Task<PROCESS> GetProcessById(string id);
+        Task<int> GetCountProcess();
     }
 }

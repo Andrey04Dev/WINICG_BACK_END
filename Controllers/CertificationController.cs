@@ -16,6 +16,21 @@ namespace webapi.Controllers
         {
             this.certification = certification;
         }
+        [HttpGet("getCountCertification")]
+        public async Task<IActionResult> GetCountCertification()
+        {
+            try
+            {
+                var getCertification = await certification.GetCountCertification();
+                if (getCertification == null) { return BadRequest("There is not a data!"); }
+                return Ok(getCertification);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllCertification()
         {

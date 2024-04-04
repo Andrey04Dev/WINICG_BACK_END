@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Isorule
 {
@@ -27,7 +28,6 @@ namespace webapi.Interfaces.Isorule
                         @IDAUDIT = rule.IDAUDIT == "" ?  null :  rule.IDAUDIT,
                         @IDCERTIFICATION = rule.IDCERTIFICATION,
                         @NAMERULE = rule.NAMERULE,
-                        @CODERULE = rule.CODERULE,
                         @RULE_DESCRIPTION = rule.RULE_DESCRIPTION
                     }, 
                     commandType: CommandType.StoredProcedure );
@@ -62,6 +62,22 @@ namespace webapi.Interfaces.Isorule
 
                 throw;
             }
+        }
+
+        public async Task<int> GetCountIsoRule()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM ISO.ISORULE";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
 
         public async Task<ISORULE> GetIsoRuleById(string id)
@@ -124,7 +140,6 @@ namespace webapi.Interfaces.Isorule
                     @IDAUDIT = rule.IDAUDIT,
                     @IDCERTIFICATION = rule.IDCERTIFICATION,
                     @NAMERULE = rule.NAMERULE,
-                    @CODERULE = rule.CODERULE,
                     @RULE_DESCRIPTION = rule.RULE_DESCRIPTION
                 },
                     splitOn: "IDCERTIFICATION, IDAUDIT",
@@ -147,10 +162,10 @@ namespace webapi.Interfaces.Isorule
                 isorule.IDCERTIFICATION = item.IDCERTIFICATION;
                 isorule.IDAUDIT = item.IDAUDIT;
                 isorule.NAMERULE = item.NAMERULE;
-                isorule.CODERULE = item.CODERULE;
                 isorule.RULE_DESCRIPTION = item.RULE_DESCRIPTION;   
                 isorule.CREATEDATE = item.CREATEDATE;
                 isorule.UPDATEDATE = item.UPDATEDATE;
+                isorule.PERSONCHANGE = item.PERSONCHANGE;
                 isorule.AUDITS = item.AUDITS;
                 isorule.CERTIFICATION = item.CERTIFICATION;
             }

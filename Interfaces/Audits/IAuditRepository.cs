@@ -9,5 +9,7 @@ namespace webapi.Interfaces.Audits
         Task<AUDITS> UpdateAudits(AUDITS audits, string id);
         Task<List<AUDITS>> GetAllAudits();
         Task<AUDITS> GetAuditsById(string id);
+
+        Task<int> GetCountAudit();
     }
 }

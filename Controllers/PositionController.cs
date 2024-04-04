@@ -30,6 +30,21 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        [HttpGet("getCountPosition")]
+        public async Task<IActionResult> GetCountPosition()
+        {
+            try
+            {
+                var getAccordance = await position.GetCountPosition();
+                if (getAccordance == null) { return BadRequest("There is not a data!"); }
+                return Ok(getAccordance);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPositionById(string id)
         {

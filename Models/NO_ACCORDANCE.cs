@@ -16,6 +16,8 @@ namespace webapi.Models
         public string? DESCRIPTION { get; set; }
         public bool? STATE { get; set; }
         public string? AUDIT_DETECT { get; set; }
+        public string? PERSONCHANGE { get; set; }
+        public int? QUANTITY { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         [ForeignKey("IDPROCESS")]

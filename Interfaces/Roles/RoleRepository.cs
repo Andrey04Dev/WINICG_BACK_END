@@ -6,6 +6,7 @@ using webapi.Data;
 using webapi.DTO.Audits;
 using webapi.DTO.Roles;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Roles
 {
@@ -62,6 +63,22 @@ namespace webapi.Interfaces.Roles
             }
         }
 
+        public async Task<int> GetCountRoles()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM US.ROLES";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
+        }
+
         public async Task<ROLES> GetRolesById(string id)
         {
             try
@@ -106,8 +123,11 @@ namespace webapi.Interfaces.Roles
             {
                 using var conn = db.GetConnection();
                 conn.Open();
-                var updateRole = await conn.QueryAsync<ROLES>("US.UPDATE_ROLE", new {@ROLE = roles.ROLE,
-                   @IDROLE= id}, 
+                var updateRole = await conn.QueryAsync<ROLES>("US.UPDATE_ROLE",
+                    new {
+                        @ROLE = roles.ROLE,
+                        @IDROLE= id
+                    }, 
                    commandType: CommandType.StoredProcedure);
                 conn.Close();
                 conn.Dispose();
@@ -127,6 +147,7 @@ namespace webapi.Interfaces.Roles
             {
                 roles.IDROLE = item.IDROLE;
                 roles.ROLE = item.ROLE;
+                roles.PERSONCHANGE =  item.PERSONCHANGE;
                 roles.CREATEDATE = item.CREATEDATE;
                 roles.UPDATEDATE = item.UPDATEDATE;
             }

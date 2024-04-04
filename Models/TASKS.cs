@@ -9,9 +9,10 @@ namespace webapi.Models
         public string? IDTASK { get; set; }
         public string? IDUSER { get; set; }
         public string? IDRULE { get; set; }
-        public string? IDFLAGS { get; set; }
+        public string? IDFLAG { get; set; }
         public string? PROJECT { get; set; }
         public string? EVENT_TASK { get; set; }
+        public string? PERSONCHANGE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         public virtual USERS? USERS { get; set; }

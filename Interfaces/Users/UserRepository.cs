@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using webapi.Data;
 using webapi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace webapi.Interfaces.Users
 {
@@ -62,10 +63,14 @@ namespace webapi.Interfaces.Users
         {
             try
             {
+                
                 using var conn = db.GetConnection();
                 conn.Open();
                 var getAllUsers = await conn.QueryAsync<USERS, ROLES, POSITION, USERS >("US.SP_GET_ALL_USERS",
-                    map: (user, role, position) => { user.ROLE = role; user.POSITION = position; return user; },
+                    map: (user, role, position) => { 
+                        user.ROLE = role; 
+                        user.POSITION = position;
+                        return user; },
                     splitOn: "IDROLE,IDPOSITION",
                     commandType: System.Data.CommandType.StoredProcedure);
                 conn.Close();
@@ -218,6 +223,7 @@ namespace webapi.Interfaces.Users
                 users.PASSWORDHASH = item.PASSWORDHASH;
                 users.PASSWORDSALT = item.PASSWORDSALT;
                 users.ACTIVE = item.ACTIVE;
+                users.CHANGEPERSON = item.CHANGEPERSON;
                 users.CREATEDATE = item.CREATEDATE;
                 users.UPDATEDATE = item.UPDATEDATE;
                 users.ROLE = item.ROLE;
@@ -257,7 +263,22 @@ namespace webapi.Interfaces.Users
                     return Convert.FromBase64String(resul).ToString();
                 }
             }
+        }
 
+        public async Task<int> GetCountUser()
+        {
+            using var conn = db.GetConnection();
+            conn.Open();
+            var sql = "SELECT COUNT(*) FROM US.USERS";
+            var GetAudit = await conn.QueryAsync<int>(sql);
+            conn.Close();
+            conn.Dispose();
+            var result = 0;
+            foreach (var audit in GetAudit)
+            {
+                result = audit;
+            }
+            return result;
         }
     }
 }

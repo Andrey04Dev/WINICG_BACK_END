@@ -5,7 +5,7 @@ namespace webapi.Models
     public class AUDITS
     {
         [Key]
-        public string? IDAUDITS { get; set; }
+        public string? IDAUDIT { get; set; }
         public string? AUDIT_NAME { get; set; }
         public DateTime? AUDIT_DATE { get; set; }
         public TimeSpan? AUDIT_TIME { get; set; }
@@ -15,6 +15,7 @@ namespace webapi.Models
         public string? SCOPE_AUDIT { get; set; }
         public string? AUDIT_PROCESS { get; set; }
         public string? AUDIT_RULE { get; set; }
+        public string? PERSONCHANGE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
 

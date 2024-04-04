@@ -9,5 +9,6 @@ namespace webapi.Interfaces.No_Accordance
         Task<NO_ACCORDANCE> UpdateNoAccordance(NO_ACCORDANCE accordance, string id);
         Task<List<NO_ACCORDANCE>> GetAllNoAccordance();
         Task<NO_ACCORDANCE> GetNoAccordanceById(string id);
+        Task<int> GetCountNoAccordance();
     }
 }

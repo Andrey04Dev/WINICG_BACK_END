@@ -35,6 +35,21 @@ namespace webapi.Controllers
                 throw;
             }
         }
+        [HttpGet("getCountIsoRule")]
+        public async Task<IActionResult> GetCountIsorule()
+        {
+            try
+            {
+                var getIsorule = await isoRule.GetCountIsoRule();
+                if (getIsorule == null) { return BadRequest("There is not a data!"); }
+                return Ok(getIsorule);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> getIsoruleById(string id)
         {

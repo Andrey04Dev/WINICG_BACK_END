@@ -19,7 +19,8 @@ namespace webapi.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.EMAIL),
-                new Claim(ClaimTypes.Role, user.ROLE.ROLE)
+                new Claim(ClaimTypes.Role, user.ROLE.ROLE), 
+                new Claim(ClaimTypes.Name, user.FULLNAME),
             };
             var credentials = new SigningCredentials(sskey, SecurityAlgorithms.HmacSha512Signature);
 

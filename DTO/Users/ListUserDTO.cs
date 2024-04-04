@@ -14,6 +14,7 @@ namespace webapi.DTO.Users
         public byte[]? PASSWORDHASH { get; set; }
         public byte[]? PASSWORDSALT { get; set; }
         public bool? ACTIVE { get; set; }
+        public string? PERSONCHANGE { get; set; }
         public DateTime? CREATEDATE { get; set; }
         public DateTime? UPDATEDATE { get; set; }
         public virtual ROLES? ROLE { get; set; }
